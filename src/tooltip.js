@@ -30,6 +30,7 @@ const DEFAULT_ARROW_SIZE: SizeType = new Size(16, 8);
 const DEFAULT_DISPLAY_AREA: RectType = new Rect(24, 24, SCREEN_WIDTH - 48, SCREEN_HEIGHT - 48);
 
 type PlacementType = 'auto' | 'top' | 'bottom' | 'left' | 'right';
+type ArrowPositionType = 'center' | 'left' | 'right'
 
 type Props = {
   animated: boolean,
@@ -46,6 +47,8 @@ type Props = {
   onChildPress: () => void,
   onClose: () => void,
   placement: PlacementType,
+  arrowPosition: ArrowPositionType,
+  fillColor: string,
   tooltipStyle: StyleSheet.Styles,
 };
 
@@ -56,6 +59,7 @@ type State = {
   tooltipOrigin: PointType,
   childRect: RectType,
   placement: PlacementType,
+  arrowPosition: ArrowPositionType,
   readyToComputeGeom: boolean,
   waitingToComputeGeom: boolean,
   measurementsFinished: boolean,
@@ -95,6 +99,8 @@ class Tooltip extends Component<Props, State> {
     onChildPress: null,
     onClose: null,
     placement: 'auto',
+    fillColor: '#fff',
+    arrowPosition: 'center'
   };
 
   constructor(props: Props) {
@@ -187,8 +193,8 @@ class Tooltip extends Component<Props, State> {
     }
   };
 
-  getArrowDynamicStyle = () => {
-    const { anchorPoint, tooltipOrigin, placement } = this.state;
+  getArrowDynamicStyle = (arrowPosition) => {
+    const { anchorPoint, tooltipOrigin, placement, contentSize } = this.state;
     const arrowSize = this.props.arrowSize;
 
     // Create the arrow from a rectangle with the appropriate borderXWidth set
@@ -206,8 +212,16 @@ class Tooltip extends Component<Props, State> {
       marginLeft = arrowSize.height;
     }
 
+    let arrowLeft = 0;
+    if (arrowPosition === 'left'){
+      arrowLeft = 6;
+    } else if (arrowPosition === 'right') {
+      arrowLeft = anchorPoint.x - tooltipOrigin.x //contentSize.width - 6
+    } else {
+      arrowLeft = anchorPoint.x - tooltipOrigin.x - ((width / 2) - marginLeft)
+    }
     return {
-      left: anchorPoint.x - tooltipOrigin.x - ((width / 2) - marginLeft),
+      left: arrowLeft,
       top: anchorPoint.y - tooltipOrigin.y - ((height / 2) - marginTop),
       width,
       height,
@@ -220,7 +234,7 @@ class Tooltip extends Component<Props, State> {
 
   getTooltipPlacementStyles = () => {
     const { height } = this.props.arrowSize;
-    const { tooltipOrigin } = this.state;
+    const { tooltipOrigin, arrowPosition} = this.state;
 
     switch (this.state.placement) {
       case 'bottom':
@@ -318,12 +332,13 @@ class Tooltip extends Component<Props, State> {
 
   _updateGeometry = ({ contentSize }: ContentSizeProps) => {
     const geom = this.computeGeometry({ contentSize });
-    const { tooltipOrigin, anchorPoint, placement } = geom;
+    const { tooltipOrigin, anchorPoint, placement, arrowPosition } = geom;
 
     this.setState({
       tooltipOrigin,
       anchorPoint,
       placement,
+      arrowPosition
     });
   };
 
@@ -335,6 +350,7 @@ class Tooltip extends Component<Props, State> {
       childRect: this.state.childRect,
       arrowSize: this.getArrowSize(innerPlacement),
       contentSize,
+      arrowPosition: this.props.arrowPosition
     };
 
     switch (innerPlacement) {
@@ -505,10 +521,10 @@ class Tooltip extends Component<Props, State> {
     const { backgroundColor, children, content, isVisible, onClose } = this.props;
 
     const extendedStyles = this._getExtendedStyles();
-    const contentStyle = [styles.content, ...extendedStyles.content];
+    const contentStyle = [styles.content, ...extendedStyles.content, {backgroundColor: this.props.fillColor}];
     const arrowColor = StyleSheet.flatten(contentStyle).backgroundColor;
     const arrowColorStyle = this.getArrowColorStyle(arrowColor);
-    const arrowDynamicStyle = this.getArrowDynamicStyle();
+    const arrowDynamicStyle = this.getArrowDynamicStyle(this.props.arrowPosition);
     const contentSizeAvailable = this.state.contentSize.width;
     const tooltipPlacementStyles = this.getTooltipPlacementStyles();
 
