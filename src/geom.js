@@ -98,10 +98,18 @@ const computeBottomGeometry = ({
   arrowSize,
   arrowPosition
 }: ComputeDirectionalGeomProps) => {
+  let tooltipLeft = 0;
+  if (arrowPosition === 'left'){
+    tooltipLeft = childRect.x + (childRect.width/2) - ARROW_MARGIN - (arrowSize.width/2)
+  } else if (arrowPosition === 'right'){
+    tooltipLeft = childRect.x + childRect.width/2 + arrowSize.width/2  + ARROW_MARGIN - contentSize.width
+  } else {
+    tooltipLeft = childRect.x + ((childRect.width - contentSize.width) / 2);
+  }
   const tooltipOrigin = new Point(
     Math.min(
       displayArea.x + displayArea.width - contentSize.width,
-      Math.max(displayArea.x, childRect.x + ((childRect.width - contentSize.width) / 2)),
+      Math.max(displayArea.x, tooltipLeft),
     ),
     childRect.y + childRect.height + arrowSize.height,
   );

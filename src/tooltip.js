@@ -216,7 +216,7 @@ class Tooltip extends Component<Props, State> {
     if (arrowPosition === 'left'){
       arrowLeft = ARROW_MARGIN;
     } else if (arrowPosition === 'right') {
-      arrowLeft = anchorPoint.x - tooltipOrigin.x - (arrowSize.width/2)
+      arrowLeft = anchorPoint.x - tooltipOrigin.x - arrowSize.width/2
     } else {
       arrowLeft = anchorPoint.x - tooltipOrigin.x - ((width / 2) - marginLeft)
     }
