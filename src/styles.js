@@ -1,6 +1,8 @@
 // @flow
 import { StyleSheet } from 'react-native';
 
+export const ARROW_MARGIN = 6;
+
 const styles: StyleSheet.Styles = StyleSheet.create({
   container: {
     ...StyleSheet.absoluteFillObject,

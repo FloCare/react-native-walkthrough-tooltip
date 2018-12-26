@@ -1,5 +1,7 @@
 // @flow
 
+import {ARROW_MARGIN} from './styles';
+
 export type PointType = {
   x: number,
   y: number,
@@ -66,9 +68,9 @@ const computeTopGeometry = ({
 }: ComputeDirectionalGeomProps) => {
   let tooltipLeft = 0;
   if (arrowPosition === 'left'){
-    tooltipLeft = childRect.x + (childRect.width/2)
+    tooltipLeft = childRect.x + (childRect.width/2) - ARROW_MARGIN - (arrowSize.width/2)
   } else if (arrowPosition === 'right'){
-    tooltipLeft = childRect.x + childRect.width/2 - contentSize.width
+    tooltipLeft = childRect.x + childRect.width/2 + arrowSize.width/2  + ARROW_MARGIN - contentSize.width
   } else {
     tooltipLeft = childRect.x + ((childRect.width - contentSize.width) / 2);
   }

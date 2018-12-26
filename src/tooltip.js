@@ -21,13 +21,13 @@ import {
   computeRightGeometry,
 } from './geom';
 import type { SizeType, PointType, RectType } from './geom';
-import styles from './styles';
+import styles, {ARROW_MARGIN} from './styles';
 
 const SCREEN_HEIGHT: number = Dimensions.get('window').height;
 const SCREEN_WIDTH: number = Dimensions.get('window').width;
 
 const DEFAULT_ARROW_SIZE: SizeType = new Size(16, 8);
-const DEFAULT_DISPLAY_AREA: RectType = new Rect(24, 24, SCREEN_WIDTH - 48, SCREEN_HEIGHT - 48);
+const DEFAULT_DISPLAY_AREA: RectType = new Rect(12, 12, SCREEN_WIDTH - 24, SCREEN_HEIGHT - 24);
 
 type PlacementType = 'auto' | 'top' | 'bottom' | 'left' | 'right';
 type ArrowPositionType = 'center' | 'left' | 'right'
@@ -214,9 +214,9 @@ class Tooltip extends Component<Props, State> {
 
     let arrowLeft = 0;
     if (arrowPosition === 'left'){
-      arrowLeft = 6;
+      arrowLeft = ARROW_MARGIN;
     } else if (arrowPosition === 'right') {
-      arrowLeft = anchorPoint.x - tooltipOrigin.x //contentSize.width - 6
+      arrowLeft = anchorPoint.x - tooltipOrigin.x - (arrowSize.width/2)
     } else {
       arrowLeft = anchorPoint.x - tooltipOrigin.x - ((width / 2) - marginLeft)
     }
